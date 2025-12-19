@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔥 바이럴 비디오 검색기</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>🔥 유튜브 바이럴 비디오 검색기</h1>
+        <p>전세계 인기 영상을 찾아보세요!</p>
+    </header>
+
+    <div class="tabs">
+        <button class="tab active" onclick="showTab('youtube')">📺 유튜브 인기 영상</button>
+        <button class="tab" onclick="showTab('trends')">📈 구글 트렌드</button>
+    </div>
+
+    <div id="youtube-section" class="section active">
+        <div class="controls">
+            <div class="control-group">
+                <label>🌍 국가:</label>
+                <select id="country-select">
+                    <option value="KR">🇰🇷 한국</option>
+                    <option value="US">🇺🇸 미국</option>
+                    <option value="JP">🇯🇵 일본</option>
+                    <option value="GB">🇬🇧 영국</option>
+                    <option value="IN">🇮🇳 인도</option>
+                    <option value="BR">🇧🇷 브라질</option>
+                    <option value="FR">🇫🇷 프랑스</option>
+                    <option value="DE">🇩🇪 독일</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>📂 카테고리:</label>
+                <select id="category-select">
+                    <option value="">🔥 전체</option>
+                    <option value="10">🎵 음악</option>
+                    <option value="20">🎮 게임</option>
+                    <option value="17">⚽ 스포츠</option>
+                    <option value="24">🎬 엔터테인먼트</option>
+                    <option value="28">🔬 과학/기술</option>
+                    <option value="22">👤 브이로그</option>
+                    <option value="23">🎭 코미디</option>
+                    <option value="25">📰 뉴스/정치</option>
+                    <option value="26">🎓 교육</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>📅 기간:</label>
+                <select id="time-range-select">
+                    <option value="today">🔥 오늘</option>
+                    <option value="week">📅 이번 주</option>
+                    <option value="month">📆 이번 달</option>
+                    <option value="year">🗓️ 올해</option>
+                    <option value="all" selected>🌟 전체 기간</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>📊 정렬:</label>
+                <select id="sort-select">
+                    <option value="popularity">🔥 인기순 (추천)</option>
+                    <option value="views">👁️ 조회수순</option>
+                    <option value="likes">👍 좋아요순</option>
+                    <option value="comments">💬 댓글순</option>
+                    <option value="recent">🆕 최신순</option>
+                </select>
+            </div>
+            <button onclick="searchYouTube()" class="search-btn">🔍 검색하기</button>
+            <button onclick="resetFilters()" class="reset-btn">🔄 초기화</button>
+        </div>
+        <div id="current-filter" class="filter-info"></div>
+        <div id="result-count" class="result-count"></div>
+        <div id="youtube-results" class="results-grid"></div>
+    </div>
+
+    <div id="trends-section" class="section">
+        <div class="controls">
+            <div class="control-group">
+                <label>🌍 국가 선택:</label>
+                <select id="trend-country">
+                    <option value="KR">🇰🇷 한국</option>
+                    <option value="US">🇺🇸 미국</option>
+                    <option value="JP">🇯🇵 일본</option>
+                    <option value="GB">🇬🇧 영국</option>
+                    <option value="IN">🇮🇳 인도</option>
+                    <option value="BR">🇧🇷 브라질</option>
+                    <option value="FR">🇫🇷 프랑스</option>
+                    <option value="DE">🇩🇪 독일</option>
+                </select>
+            </div>
+            <button onclick="searchTrends()" class="search-btn">📈 트렌드 검색</button>
+            <button onclick="searchRealtime()" class="reset-btn">⚡ 실시간 트렌드</button>
+        </div>
+        <div id="trends-info" class="filter-info"></div>
+        <div id="trends-results" class="trends-container"></div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(tabName + '-section').classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+
+    <script src="config.js"></script>
+    <script src="js/youtube.js"></script>
+    <script src="js/trends.js"></script>
+</body>
+</html>
