@@ -1,6 +1,6 @@
-// 📈 구글 트렌드 기능 (실용적 버전)
+// 📈 Google Trends 기능
 
-const TREND_COUNTRY_NAMES = {
+const TRENDS_COUNTRY_NAMES = {
     'KR': '한국',
     'US': '미국',
     'JP': '일본',
@@ -11,254 +11,161 @@ const TREND_COUNTRY_NAMES = {
     'DE': '독일'
 };
 
-// 일일 트렌드 검색
+// 메인 트렌드 검색 함수
 function searchTrends() {
-    const country = document.getElementById('trend-country').value;
+    const countrySelect = document.getElementById('trends-country-select');
     const resultsDiv = document.getElementById('trends-results');
-    const infoDiv = document.getElementById('trends-info');
     
-    const countryName = TREND_COUNTRY_NAMES[country] || country;
+    // ⚠️ null 체크
+    if (!countrySelect) {
+        console.error('❌ trends-country-select 요소를 찾을 수 없습니다!');
+        return;
+    }
     
-    infoDiv.innerHTML = `
-        <span>🌍 <strong>${countryName}</strong></span>
-        <span style="margin: 0 15px;">|</span>
-        <span>📅 <strong>일일 인기 검색어</strong></span>
-    `;
+    if (!resultsDiv) {
+        console.error('❌ trends-results 요소를 찾을 수 없습니다!');
+        return;
+    }
     
-    console.log('📈 트렌드 탭 활성화:', countryName);
+    const country = countrySelect.value;
+    const countryName = TRENDS_COUNTRY_NAMES[country] || country;
     
-    resultsDiv.innerHTML = `
-        <div style="display: grid; gap: 20px;">
-            <!-- 메인 카드 -->
-            <div class="trend-card" style="text-align: center; padding: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-                <h2 style="font-size: 2em; margin-bottom: 15px;">📊 ${countryName} 트렌드</h2>
-                <p style="font-size: 1.1em; margin: 20px 0; opacity: 0.95;">
-                    실시간으로 급상승하는 검색어와<br>
-                    인기 주제를 확인하세요!
-                </p>
-            </div>
-
-            <!-- 옵션 카드들 -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-                <!-- Google Trends 일일 -->
-                <div class="trend-card" style="padding: 30px;">
-                    <div style="text-align: center; margin-bottom: 20px;">
-                        <div style="font-size: 3em; margin-bottom: 10px;">📈</div>
-                        <h3 style="color: #667eea; margin-bottom: 10px;">일일 인기 검색어</h3>
-                        <p style="color: #666; font-size: 0.95em;">
-                            오늘 ${countryName}에서<br>
-                            가장 많이 검색된 키워드
-                        </p>
-                    </div>
-                    <a href="https://trends.google.com/trends/trendingsearches/daily?geo=${country}" 
-                       target="_blank" 
-                       class="watch-btn" 
-                       style="display: block; text-decoration: none; margin-top: 20px;">
-                        📊 일일 트렌드 보기
-                    </a>
-                </div>
-
-                <!-- Google Trends 실시간 -->
-                <div class="trend-card" style="padding: 30px;">
-                    <div style="text-align: center; margin-bottom: 20px;">
-                        <div style="font-size: 3em; margin-bottom: 10px;">⚡</div>
-                        <h3 style="color: #ff6b6b; margin-bottom: 10px;">실시간 급상승</h3>
-                        <p style="color: #666; font-size: 0.95em;">
-                            지금 이 순간<br>
-                            급상승하는 검색어
-                        </p>
-                    </div>
-                    <a href="https://trends.google.com/trends/trendingsearches/realtime?geo=${country}" 
-                       target="_blank" 
-                       class="watch-btn" 
-                       style="display: block; text-decoration: none; margin-top: 20px; background: linear-gradient(135deg, #ff6b6b, #ee5a52);">
-                        ⚡ 실시간 트렌드 보기
-                    </a>
-                </div>
-
-                <!-- Google Trends 메인 -->
-                <div class="trend-card" style="padding: 30px;">
-                    <div style="text-align: center; margin-bottom: 20px;">
-                        <div style="font-size: 3em; margin-bottom: 10px;">🔍</div>
-                        <h3 style="color: #4285f4; margin-bottom: 10px;">트렌드 탐색</h3>
-                        <p style="color: #666; font-size: 0.95em;">
-                            키워드 비교 및<br>
-                            상세 분석 도구
-                        </p>
-                    </div>
-                    <a href="https://trends.google.com/trends/?geo=${country}" 
-                       target="_blank" 
-                       class="watch-btn" 
-                       style="display: block; text-decoration: none; margin-top: 20px; background: #4285f4;">
-                        🌐 Google Trends 열기
-                    </a>
-                </div>
-            </div>
-
-            <!-- YouTube 인기 영상 링크 -->
-            <div class="trend-card" style="padding: 30px; background: #fff3cd; border-left: 4px solid #ffc107;">
-                <div style="display: flex; align-items: center; gap: 20px;">
-                    <div style="font-size: 3em;">💡</div>
-                    <div style="flex: 1;">
-                        <h3 style="color: #856404; margin-bottom: 10px;">추천 팁</h3>
-                        <p style="color: #856404; margin-bottom: 15px;">
-                            <strong>유튜브 인기 영상 탭</strong>에서 "오늘" 또는 "이번 주" 기간을 선택하면<br>
-                            ${countryName}의 바이럴 영상을 바로 확인할 수 있어요!
-                        </p>
-                        <button onclick="showTab('youtube'); document.getElementById('time-range-select').value='today'; searchYouTube();" 
-                                style="padding: 12px 20px; background: #ffc107; color: #856404; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
-                            📺 오늘의 인기 영상 보기
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 대체 트렌드 사이트 -->
-            <div class="trend-card" style="padding: 30px;">
-                <h3 style="color: #333; margin-bottom: 20px; text-align: center;">🌐 다른 트렌드 사이트</h3>
-                <div style="display: grid; gap: 15px;">
-                    <a href="https://www.youtube.com/feed/trending?gl=${country}" 
-                       target="_blank" 
-                       style="display: flex; align-items: center; gap: 15px; padding: 15px; background: #f8f9fa; border-radius: 10px; text-decoration: none; transition: all 0.3s;"
-                       onmouseover="this.style.background='#e9ecef'"
-                       onmouseout="this.style.background='#f8f9fa'">
-                        <span style="font-size: 2em;">📺</span>
-                        <div>
-                            <div style="font-weight: 600; color: #ff0000; margin-bottom: 5px;">YouTube 인기</div>
-                            <div style="font-size: 0.9em; color: #666;">YouTube에서 인기 있는 영상</div>
-                        </div>
-                    </a>
-
-                    <a href="https://twitter.com/explore/tabs/trending" 
-                       target="_blank" 
-                       style="display: flex; align-items: center; gap: 15px; padding: 15px; background: #f8f9fa; border-radius: 10px; text-decoration: none; transition: all 0.3s;"
-                       onmouseover="this.style.background='#e9ecef'"
-                       onmouseout="this.style.background='#f8f9fa'">
-                        <span style="font-size: 2em;">𝕏</span>
-                        <div>
-                            <div style="font-weight: 600; color: #1da1f2; margin-bottom: 5px;">X (Twitter) 트렌드</div>
-                            <div style="font-size: 0.9em; color: #666;">실시간 트렌딩 토픽</div>
-                        </div>
-                    </a>
-
-                    ${country === 'KR' ? `
-                    <a href="https://datalab.naver.com/keyword/realtimeList.naver" 
-                       target="_blank" 
-                       style="display: flex; align-items: center; gap: 15px; padding: 15px; background: #f8f9fa; border-radius: 10px; text-decoration: none; transition: all 0.3s;"
-                       onmouseover="this.style.background='#e9ecef'"
-                       onmouseout="this.style.background='#f8f9fa'">
-                        <span style="font-size: 2em;">🟢</span>
-                        <div>
-                            <div style="font-weight: 600; color: #03c75a; margin-bottom: 5px;">네이버 실검</div>
-                            <div style="font-size: 0.9em; color: #666;">네이버 실시간 검색어</div>
-                        </div>
-                    </a>
-                    ` : ''}
-                </div>
-            </div>
-        </div>
-    `;
+    console.log('📈 트렌드 검색:', countryName);
+    
+    // Google Trends는 공식 API가 없으므로 외부 링크 제공
+    displayTrendsLinks(country, countryName, resultsDiv);
 }
 
-// 실시간 트렌드 (searchTrends와 동일한 UI 표시)
-function searchRealtime() {
-    const country = document.getElementById('trend-country').value;
-    const resultsDiv = document.getElementById('trends-results');
-    const infoDiv = document.getElementById('trends-info');
-    
-    const countryName = TREND_COUNTRY_NAMES[country] || country;
-    
-    infoDiv.innerHTML = `
-        <span>🌍 <strong>${countryName}</strong></span>
-        <span style="margin: 0 15px;">|</span>
-        <span>⚡ <strong>실시간 인기 검색어</strong></span>
-    `;
-    
-    console.log('⚡ 실시간 트렌드:', countryName);
-    
-    resultsDiv.innerHTML = `
-        <div style="display: grid; gap: 20px;">
-            <!-- 메인 카드 -->
-            <div class="trend-card" style="text-align: center; padding: 40px; background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%); color: white;">
-                <h2 style="font-size: 2em; margin-bottom: 15px;">⚡ ${countryName} 실시간 트렌드</h2>
-                <p style="font-size: 1.1em; margin: 20px 0; opacity: 0.95;">
-                    지금 이 순간 가장 뜨거운<br>
-                    검색어를 확인하세요!
+// 트렌드 링크 표시
+function displayTrendsLinks(country, countryName, resultsDiv) {
+    let html = `
+        <div class="trend-container">
+            <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 10px; margin-bottom: 30px;">
+                <h3 style="margin: 0; color: #667eea;">
+                    📈 ${countryName} 트렌드
+                </h3>
+                <p style="margin: 10px 0 0; color: #888; font-size: 0.95em;">
+                    Google Trends와 YouTube 트렌딩을 확인하세요!
                 </p>
-                <a href="https://trends.google.com/trends/trendingsearches/realtime?geo=${country}" 
-                   target="_blank" 
-                   class="watch-btn" 
-                   style="display: inline-block; text-decoration: none; margin-top: 20px; background: white; color: #ff6b6b; font-size: 1.2em; padding: 15px 30px;">
-                    🔥 실시간 트렌드 보기
-                </a>
             </div>
-
-            <!-- 빠른 링크 그리드 -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
-                <a href="https://trends.google.com/trends/trendingsearches/realtime?geo=${country}" 
-                   target="_blank" 
-                   class="trend-card"
-                   style="padding: 25px; text-align: center; text-decoration: none; transition: all 0.3s;"
-                   onmouseover="this.style.transform='translateY(-5px)'"
-                   onmouseout="this.style.transform='translateY(0)'">
-                    <div style="font-size: 2.5em; margin-bottom: 10px;">⚡</div>
-                    <div style="font-weight: 600; color: #ff6b6b; margin-bottom: 5px;">Google 실시간</div>
-                    <div style="font-size: 0.9em; color: #666;">급상승 검색어</div>
-                </a>
-
-                <a href="https://www.youtube.com/feed/trending?gl=${country}" 
-                   target="_blank" 
-                   class="trend-card"
-                   style="padding: 25px; text-align: center; text-decoration: none; transition: all 0.3s;"
-                   onmouseover="this.style.transform='translateY(-5px)'"
-                   onmouseout="this.style.transform='translateY(0)'">
-                    <div style="font-size: 2.5em; margin-bottom: 10px;">📺</div>
-                    <div style="font-weight: 600; color: #ff0000; margin-bottom: 5px;">YouTube 인기</div>
-                    <div style="font-size: 0.9em; color: #666;">인기 급상승 영상</div>
-                </a>
-
-                <a href="https://twitter.com/explore/tabs/trending" 
-                   target="_blank" 
-                   class="trend-card"
-                   style="padding: 25px; text-align: center; text-decoration: none; transition: all 0.3s;"
-                   onmouseover="this.style.transform='translateY(-5px)'"
-                   onmouseout="this.style.transform='translateY(0)'">
-                    <div style="font-size: 2.5em; margin-bottom: 10px;">𝕏</div>
-                    <div style="font-weight: 600; color: #1da1f2; margin-bottom: 5px;">X 트렌딩</div>
-                    <div style="font-size: 0.9em; color: #666;">실시간 화제</div>
-                </a>
-
-                ${country === 'KR' ? `
-                <a href="https://datalab.naver.com/keyword/realtimeList.naver" 
-                   target="_blank" 
-                   class="trend-card"
-                   style="padding: 25px; text-align: center; text-decoration: none; transition: all 0.3s;"
-                   onmouseover="this.style.transform='translateY(-5px)'"
-                   onmouseout="this.style.transform='translateY(0)'">
-                    <div style="font-size: 2.5em; margin-bottom: 10px;">🟢</div>
-                    <div style="font-weight: 600; color: #03c75a; margin-bottom: 5px;">네이버 실검</div>
-                    <div style="font-size: 0.9em; color: #666;">실시간 검색어</div>
-                </a>
-                ` : ''}
-            </div>
-
-            <!-- 유튜브 탭 연결 -->
-            <div class="trend-card" style="padding: 30px; background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1)); border-left: 4px solid #667eea;">
-                <h3 style="color: #667eea; margin-bottom: 15px;">💡 이 사이트에서 바로 확인하기</h3>
-                <p style="color: #666; margin-bottom: 20px;">
-                    유튜브 인기 영상 탭에서 실시간 바이럴 영상을 확인할 수 있어요!
-                </p>
-                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                    <button onclick="showTab('youtube'); document.getElementById('time-range-select').value='today'; searchYouTube();" 
-                            style="padding: 12px 20px; background: #667eea; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
-                        🔥 오늘의 인기 영상
-                    </button>
-                    <button onclick="showTab('youtube'); document.getElementById('time-range-select').value='week'; searchYouTube();" 
-                            style="padding: 12px 20px; background: #764ba2; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
-                        📅 이번 주 인기 영상
-                    </button>
+            
+            <div class="trend-section">
+                <h3>🌐 Google Trends</h3>
+                <div class="trend-cards">
+                    <a href="https://trends.google.com/trends/trendingsearches/daily?geo=${country}" 
+                       target="_blank" 
+                       class="link-card"
+                       rel="noopener noreferrer">
+                        <h4>📊 일일 트렌드</h4>
+                        <p>오늘의 인기 검색어를 확인하세요</p>
+                    </a>
+                    
+                    <a href="https://trends.google.com/trends/trendingsearches/realtime?geo=${country}" 
+                       target="_blank" 
+                       class="link-card"
+                       rel="noopener noreferrer">
+                        <h4>⚡ 실시간 트렌드</h4>
+                        <p>지금 이 순간 인기 급상승 키워드</p>
+                    </a>
+                    
+                    <a href="https://trends.google.com/trends/explore?geo=${country}" 
+                       target="_blank" 
+                       class="link-card"
+                       rel="noopener noreferrer">
+                        <h4>🔍 트렌드 탐색기</h4>
+                        <p>키워드 분석 및 비교 도구</p>
+                    </a>
                 </div>
             </div>
-        </div>
+            
+            <div class="trend-section">
+                <h3>🎥 YouTube 트렌딩</h3>
+                <div class="trend-cards">
+                    <a href="https://www.youtube.com/feed/trending?gl=${country}" 
+                       target="_blank" 
+                       class="link-card"
+                       rel="noopener noreferrer">
+                        <h4>🔥 인기 급상승 동영상</h4>
+                        <p>${countryName}에서 지금 인기 있는 영상</p>
+                    </a>
+                    
+                    <a href="https://www.youtube.com/feed/trending?bp=4gINGgt5dG1hX2NoYXJ0cw%3D%3D&gl=${country}" 
+                       target="_blank" 
+                       class="link-card"
+                       rel="noopener noreferrer">
+                        <h4>🎵 인기 음악</h4>
+                        <p>${countryName}에서 인기 있는 음악 영상</p>
+                    </a>
+                    
+                    <a href="https://www.youtube.com/feed/trending?bp=4gIcGhpnYW1pbmdfY29ycHVzX21vc3RfcG9wdWxhcg%3D%3D&gl=${country}" 
+                       target="_blank" 
+                       class="link-card"
+                       rel="noopener noreferrer">
+                        <h4>🎮 인기 게임</h4>
+                        <p>${countryName}에서 인기 있는 게임 영상</p>
+                    </a>
+                </div>
+            </div>
     `;
+    
+    // 한국 전용: 네이버 실시간 검색어
+    if (country === 'KR') {
+        html += `
+            <div class="trend-section">
+                <h3>🇰🇷 네이버 실시간 검색어</h3>
+                <div class="trend-cards">
+                    <a href="https://datalab.naver.com/keyword/realtimeList.naver" 
+                       target="_blank" 
+                       class="link-card"
+                       rel="noopener noreferrer">
+                        <h4>📊 실시간 검색어</h4>
+                        <p>네이버 데이터랩 실시간 급상승 검색어</p>
+                    </a>
+                    
+                    <a href="https://datalab.naver.com/" 
+                       target="_blank" 
+                       class="link-card"
+                       rel="noopener noreferrer">
+                        <h4>📈 데이터랩</h4>
+                        <p>네이버 검색 트렌드 분석</p>
+                    </a>
+                </div>
+            </div>
+        `;
+    }
+    
+    // X (Twitter) 트렌드
+    const twitterLocations = {
+        'KR': '23424868',
+        'US': '23424977',
+        'JP': '23424856',
+        'GB': '23424975',
+        'IN': '23424848',
+        'BR': '23424768',
+        'FR': '23424819',
+        'DE': '23424829'
+    };
+    
+    if (twitterLocations[country]) {
+        html += `
+            <div class="trend-section">
+                <h3>🐦 X (Twitter) 트렌드</h3>
+                <div class="trend-cards">
+                    <a href="https://twitter.com/explore/tabs/trending" 
+                       target="_blank" 
+                       class="link-card"
+                       rel="noopener noreferrer">
+                        <h4>🔥 트렌딩 토픽</h4>
+                        <p>${countryName}에서 지금 이야기되는 주제</p>
+                    </a>
+                </div>
+            </div>
+        `;
+    }
+    
+    html += `</div>`; // trend-container 닫기
+    
+    resultsDiv.innerHTML = html;
+    
+    console.log('✅ 트렌드 링크 표시 완료');
 }

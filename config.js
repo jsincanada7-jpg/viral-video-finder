@@ -1,6 +1,6 @@
 // 🔐 API 키 설정
 const CONFIG = {
-    YOUTUBE_API_KEY: 'AIzaSyDufwlipY-CjbRzPeYwb52SV9VpIazhuXE',
+    YOUTUBE_API_KEY: 'AIzaSyD6LilL8IiIL9xGxffrrdHUkzimQQA893s',
 };
 
 // 💡 사용 방법:
